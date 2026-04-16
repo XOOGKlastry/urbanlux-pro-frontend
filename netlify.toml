@@ -1,0 +1,28 @@
+[build]
+  publish = "."
+  command = """
+    sed -i "s|%%API_URL%%|$API_URL|g" inject-env.js && \
+    sed -i "s|%%FIREBASE_API_KEY%%|$FIREBASE_API_KEY|g" inject-env.js && \
+    sed -i "s|%%FIREBASE_AUTH_DOMAIN%%|$FIREBASE_AUTH_DOMAIN|g" inject-env.js && \
+    sed -i "s|%%FIREBASE_PROJECT_ID%%|$FIREBASE_PROJECT_ID|g" inject-env.js && \
+    sed -i "s|%%FIREBASE_STORAGE_BUCKET%%|$FIREBASE_STORAGE_BUCKET|g" inject-env.js && \
+    sed -i "s|%%FIREBASE_MESSAGING_SENDER_ID%%|$FIREBASE_MESSAGING_SENDER_ID|g" inject-env.js && \
+    sed -i "s|%%FIREBASE_APP_ID%%|$FIREBASE_APP_ID|g" inject-env.js
+  """
+
+[[headers]]
+  for = "/models.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
