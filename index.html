@@ -2035,11 +2035,12 @@
     function addMarker(l, skipCluster = false) {
       const m = L.marker([l.lat, l.lng], { icon: makeIcon(l) });
       m.bindPopup(() => makePopup(l), { maxWidth: 240 });
-      m.on('click', () => openDetail(l));
+      // Usunięto linijkę m.on('click'...)
       markers[l.id] = m;
       if (!skipCluster) clusterGroup.addLayer(m);
       return m;
     }
+
 
     function makePopup(l) {
       const c = COND_C[l.stan_oprawy] || '#8b949e';
@@ -2052,7 +2053,7 @@
     </div>
     ${l.moc_oprawa_w ? `<div style="font-size:11px;color:#8b949e">⚡ ${l.moc_oprawa_w} W</div>` : ''}
     ${l.usterka === 'TAK' ? `<div style="margin-top:6px;color:#ef4444;font-size:11px;font-weight:600">⚠️ USTERKA: ${esc(l.usterka_opis || l.usterka_typ)}</div>` : ''}
-    <button onclick="openDetail(LAMPS.find(x=>x.id==='${esc(l.id)}'))" style="margin-top:8px;width:100%;padding:5px;background:#3b82f6;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600">📋 Szczegóły / Edytuj</button>
+    <button onclick="toggleDetail('${esc(l.id)}')" style="margin-top:8px;width:100%;padding:5px;background:#3b82f6;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600">📋 Szczegóły / Edytuj</button>
   </div>`;
     }
 
@@ -2164,7 +2165,19 @@
       }).join('');
     }
 
-    // ── DETAIL / EDIT ────────────────────────────────────────
+    // ── DETAIL / EDIT ─────────
+    //───────────────────────────────
+    function toggleDetail(id) {
+      const sidebar = document.getElementById('sidebar');
+      // Jeśli panel jest otwarty i dotyczy tej samej lampy - zamknij go
+      if (sidebar.classList.contains('open') && curLamp && curLamp.id === id) {
+        closeSidebar();
+      } else {
+        // W przeciwnym razie znajdź lampę i otwórz panel
+        const l = LAMPS.find(x => x.id === id);
+        if (l) openDetail(l);
+      }
+    }
     function openDetail(l) {
       if (!l) return;
       curLamp = l;
