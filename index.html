@@ -1908,6 +1908,7 @@
     let boxAddMode = false, boxLatLng = null;
     let curLamp = null;
     let sortCol = null, sortDir = 1;
+    let polylineDrawer;
 
     // ── DEMO DATA (Zamość) ─────────────────────────────────
     const DEMO_LAMPS = [
@@ -2393,11 +2394,19 @@
       if (!drawControl._map) drawControl.addTo(MAP);
       segDrawActive = true;
       document.getElementById('seg-controls').classList.add('show');
+
+      // Automatyczne włączenie narzędzia do rysowania linii
+      if (!polylineDrawer) {
+        polylineDrawer = new L.Draw.Polyline(MAP, drawControl.options.draw.polyline);
+      }
+      polylineDrawer.enable();
+
       toast('✏️ Kliknij punkty trasy — dblklik kończy segment');
     }
 
     function deactivateSegmentDraw() {
       if (drawControl._map) drawControl.remove();
+      if (polylineDrawer) polylineDrawer.disable(); // Wyłączenie narzędzia
       segDrawActive = false;
       document.getElementById('seg-controls').classList.remove('show');
     }
