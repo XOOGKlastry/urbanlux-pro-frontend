@@ -2425,6 +2425,7 @@
     }
 
     async function onSegmentCreated(e) {
+      if (!requireAuth()) { deactivateSegmentDraw(); return; }
       const layer = e.layer;
       const geojson = layer.toGeoJSON().geometry;
       const len = calcLineLength(geojson.coordinates);
@@ -2628,6 +2629,9 @@
             liczba_pasow: +document.getElementById('sp-pasy').value || 2,
             predkosc_max_kmh: +document.getElementById('sp-speed').value || 50,
             natezenie_ruchu: document.getElementById('sp-ruch').value,
+            miejscowosc: '',
+            notes: '',
+            control_box_id: null
           });
           ov.remove();
         };
